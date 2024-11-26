@@ -34,11 +34,7 @@ def gameover(screen :pg.Surface) -> None:
     ゲームオーバー時に画面に「Game Over」を表示し、泣いているこうかとんを描画する。
     引数：screen - 描画するスクリーンSurface
     """
-    # ブラックアウト用の半透明Surface
-    overlay = pg.Surface(screen.get_size())
-    overlay.set_alpha(210)  # 半透明度設定
-    overlay.fill((0, 0, 0))  # 黒色で塗りつぶす
-    screen.blit(overlay, (0, 0))  # 画面に重ねる
+
     
     # "Game Over" テキストの描画
     font = pg.font.Font(None, 80)
@@ -50,11 +46,12 @@ def gameover(screen :pg.Surface) -> None:
     left_pos = (WIDTH // 4 - crying_kk_img.get_width() // 2, HEIGHT // 2 - crying_kk_img.get_height() // 2)
     right_pos = (3 * WIDTH // 4 - crying_kk_img.get_width() // 2, HEIGHT // 2 - crying_kk_img.get_height() // 2)
     # ブラックアウトのための半透明Surface
-    blackout = pg.Surface((WIDTH, HEIGHT))
-    blackout.fill((0, 0, 0))
-    blackout.set_alpha(210)
+    overlay = pg.Surface(screen.get_size())
+    overlay.set_alpha(128)  # 半透明度設定
+    overlay.fill((0, 0, 0))  # 黒色で塗りつぶす
+    screen.blit(overlay, (0, 0))  # 画面に重ねる
     # 半透明の黒い四角を画面に描画（ブラックアウト） 
-    screen.blit(blackout, (0, 0))
+    screen.blit(overlay, (0, 0))
     # ブラックアウト後にこうかとんとテキストを描画
     screen.blit(crying_kk_img, left_pos)
     screen.blit(crying_kk_img, right_pos)
