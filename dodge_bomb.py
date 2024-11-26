@@ -75,6 +75,25 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
         bb_imgs.append(bb_img)
     return bb_imgs, bb_accs
 
+def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
+    """
+    引数で与えられた移動量の合計値に対応するこうかとんの向きを表す画像Surfaceを返す。
+    引数：sum_mv - 移動量タプル（例：(5, 0)など）
+    戻り値：移動方向に対応するこうかとんの画像Surface
+    """
+    kk_images = {
+    (0, -5): pg.transform.rotozoom(pg.image.load("fig/3.png"), -90, 1),  # 上
+    (0, 5): pg.transform.rotozoom(pg.image.load("fig/3.png"), 90, 1),  # 下
+    (-5, 0): pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 1),  # 左
+    (5, 0): pg.transform.flip(pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 1), True, False),  # 右（反転）
+    (5, -5): pg.transform.flip(pg.transform.rotozoom(pg.image.load("fig/3.png"), -45, 1), True, False),  # 右上（反転）
+    (-5, 5): pg.transform.rotozoom(pg.image.load("fig/3.png"), 45, 1),  # 左下
+    (-5, -5): pg.transform.rotozoom(pg.image.load("fig/3.png"), -45, 1),  # 左上
+    (5, 5): pg.transform.flip(pg.transform.rotozoom(pg.image.load("fig/3.png"), 45, 1), True, False),  # 右下（反転）
+}
+    # sum_mvが指定されていない場合のデフォルト（上向き）
+    return kk_images.get(sum_mv, pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 1))
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -107,7 +126,8 @@ def main():
             if key_lst[key]:
                 sum_mv[0] += tpl[0]
                 sum_mv[1] += tpl[1]
-        
+
+        kk_img = get_kk_img(tuple(sum_mv))
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
