@@ -3,6 +3,7 @@ import time
 import random
 import sys
 import pygame as pg
+import math
 
 WIDTH, HEIGHT = 1100, 650
 DELTA = {
@@ -94,6 +95,23 @@ def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
     # sum_mvが指定されていない場合のデフォルト（上向き）
     return kk_images.get(sum_mv, pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 1))
 
+def calc_orientation(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]) -> tuple[float, float]:
+    """
+    orgから見て、dstがどこにあるかを計算し、方向ベクトルを返す
+    引数：org - 始点Rect
+          dst - 終点Rect
+          current_xy - 現在の移動速度ベクトル
+    戻り値：方向ベクトル (vx, vy)
+    """
+    dx = dst.centerx - org.centerx
+    dy = dst.centery - org.centery
+    norm = math.sqrt(dx**2 + dy**2)  # ノルム（距離）
+    if norm != 0:  # 距離が0でないときにのみ正規化
+        vx = dx / norm * 5  # 速度調整（5は速度の係数）
+        vy = dy / norm * 5
+    else:
+        vx, vy = 0, 0
+    return vx, vy
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -128,6 +146,7 @@ def main():
                 sum_mv[1] += tpl[1]
 
         kk_img = get_kk_img(tuple(sum_mv))
+        vx, vy = calc_orientation(bb_rct, kk_rct, (vx, vy))
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
