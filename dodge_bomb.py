@@ -15,7 +15,7 @@ DELTA = {
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
-def check_bound(rct: pg.rect) -> tuple[bool,bool]:
+def check_bound(rct: pg.Rect) -> tuple[bool,bool]:
     """
     引数で与えたRectが画面の中か外かを判断する
     引数:こうかとんのRect or 爆弾Rect 
@@ -72,6 +72,7 @@ def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
         pg.draw.circle(bb_img, (255, 0, 0), (10 * r, 10 * r), 10 * r)
         bb_imgs.append(bb_img)
     return bb_imgs, bb_accs
+
 
 def get_kk_img(sum_mv: tuple[int, int]) -> pg.Surface:
     """
